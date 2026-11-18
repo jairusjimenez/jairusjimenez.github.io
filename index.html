@@ -54,6 +54,7 @@
         <nav class="flex items-center gap-6">
           <a href="#recent-projects" class="hover:underline">Recent Projects</a>
           <a href="#github-archive" class="hover:underline">GitHub Archive</a>
+          <a href="#request-resume" class="hover:underline">Request Resume</a>
           <a href="https://github.com/jairusjimenez" target="_blank" rel="noopener noreferrer" class="hover:underline text-[var(--accent)]">GitHub ↗</a>
         </nav>
       </header>
@@ -225,7 +226,7 @@
       </section>
 
       <!-- Live GitHub Repository Archive -->
-      <section id="github-archive" class="p-6 md:p-8 space-y-4">
+      <section id="github-archive" class="p-6 md:p-8 space-y-4 border-b border-[var(--border)]">
         <div class="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border)] pb-4">
           <div>
             <div class="font-mono-tech text-xs uppercase tracking-widest text-[var(--accent)]">GITHUB_ARCHIVE // @jairusjimenez</div>
@@ -239,6 +240,65 @@
         <div id="repo-list" class="divide-y divide-[var(--border)] font-mono-tech text-xs">
           <div class="py-4 text-[var(--muted)]">Loading repositories from GitHub (@jairusjimenez)...</div>
         </div>
+      </section>
+
+      <!-- Request Resume -->
+      <section id="request-resume" class="grid md:grid-cols-12">
+        <div class="md:col-span-5 p-6 md:p-8 md:border-r border-[var(--border)] space-y-3">
+          <div class="font-mono-tech text-xs uppercase tracking-widest text-[var(--accent)]">DIRECT_INQUIRY</div>
+          <h2 class="font-editorial text-2xl md:text-3xl font-bold tracking-tight">Request My Resume</h2>
+          <p class="text-sm text-[var(--muted)] leading-relaxed">
+            Hiring for an AI, Computer Vision, or Full-Stack role? Enter your email and a short note, and I will send over my latest CV.
+          </p>
+        </div>
+
+        <form id="resume-form" class="md:col-span-7 p-6 md:p-8 bg-[var(--bg)] space-y-4">
+          <div class="space-y-1.5">
+            <label for="req-email" class="block font-mono-tech text-xs uppercase tracking-wider text-[var(--muted)]">
+              Your Email Address
+            </label>
+            <input
+              id="req-email"
+              name="email"
+              type="email"
+              required
+              placeholder="recruiter@company.com"
+              class="w-full px-3 py-2.5 border border-[var(--border)] bg-[var(--card)] text-sm font-mono-tech focus:outline-2 focus:outline-[var(--accent)]"
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="req-message" class="block font-mono-tech text-xs uppercase tracking-wider text-[var(--muted)]">
+              Short Message
+            </label>
+            <textarea
+              id="req-message"
+              name="message"
+              rows="3"
+              required
+              placeholder="Hi Jairus, we'd like to review your resume for..."
+              class="w-full px-3 py-2.5 border border-[var(--border)] bg-[var(--card)] text-sm focus:outline-2 focus:outline-[var(--accent)]"
+            ></textarea>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              type="submit"
+              class="cursor-pointer px-5 py-2.5 border border-[var(--fg)] bg-[var(--fg)] text-[var(--bg)] font-mono-tech text-xs uppercase tracking-widest hover:bg-[var(--accent)] hover:border-[var(--accent)] hover:text-[var(--accent-fg)] transition-colors motion-reduce:transition-none"
+            >
+              Send Resume Request →
+            </button>
+            <button
+              type="button"
+              id="copy-request-btn"
+              class="cursor-pointer px-4 py-2.5 border border-[var(--border)] bg-[var(--card)] font-mono-tech text-xs uppercase tracking-widest hover:border-[var(--fg)] transition-colors motion-reduce:transition-none"
+            >
+              Copy Request Text
+            </button>
+          </div>
+
+          <p id="resume-status" aria-live="polite" class="font-mono-tech text-xs text-[var(--muted)] min-h-[1rem]"></p>
+        </form>
       </section>
 
     </div>
@@ -270,6 +330,60 @@
       }
     }
     loadGitHubRepos();
+
+    // Resume request handler (uses optional Formspree/Web3Forms endpoint, or opens pre-filled email)
+    const RESUME_OWNER_EMAIL = 'jairusjimenez@live.com';
+    const RESUME_FORM_ENDPOINT = '';
+
+    const resumeForm = document.getElementById('resume-form');
+    const resumeStatus = document.getElementById('resume-status');
+    const copyRequestBtn = document.getElementById('copy-request-btn');
+
+    resumeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('req-email').value.trim();
+      const message = document.getElementById('req-message').value.trim();
+      if (!email || !message) return;
+
+      if (RESUME_FORM_ENDPOINT) {
+        resumeStatus.textContent = 'Sending request...';
+        try {
+          const res = await fetch(RESUME_FORM_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ email, message, _subject: `Resume Request from ${email}` })
+          });
+          if (!res.ok) throw new Error('Request failed');
+          resumeStatus.textContent = 'Request sent! Thank you for reaching out.';
+          resumeForm.reset();
+        } catch {
+          resumeStatus.textContent = 'Could not submit via form endpoint. Opening email client instead...';
+          window.location.href = `mailto:${RESUME_OWNER_EMAIL}?subject=${encodeURIComponent('Resume Request from ' + email)}&body=${encodeURIComponent(`From: ${email}\n\n${message}`)}`;
+        }
+        return;
+      }
+
+      const subject = encodeURIComponent(`Resume Request from ${email}`);
+      const body = encodeURIComponent(`Requester Email: ${email}\n\nMessage:\n${message}`);
+      window.location.href = `mailto:${RESUME_OWNER_EMAIL}?subject=${subject}&body=${body}`;
+      resumeStatus.textContent = `Opening your email client to send the request to ${RESUME_OWNER_EMAIL}.`;
+    });
+
+    copyRequestBtn.addEventListener('click', async () => {
+      const email = document.getElementById('req-email').value.trim();
+      const message = document.getElementById('req-message').value.trim();
+      if (!email || !message) {
+        resumeStatus.textContent = 'Please enter both your email address and a short message first.';
+        return;
+      }
+      const text = `To: ${RESUME_OWNER_EMAIL}\nSubject: Resume Request from ${email}\n\nRequester Email: ${email}\n\n${message}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        resumeStatus.textContent = 'Request copied to clipboard.';
+      } catch {
+        resumeStatus.textContent = 'Clipboard unavailable — please use Send Resume Request.';
+      }
+    });
   </script>
 </body>
 </html>
