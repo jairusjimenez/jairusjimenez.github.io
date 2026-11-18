@@ -125,12 +125,12 @@
               <span class="px-2 py-0.5 border border-[var(--border)]">JWT Auth</span>
             </div>
             <div class="font-mono-tech text-xs pt-1">
-              <a href="https://github.com/jairusjimenez" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
+              <a href="https://github.com/jairusjimenez/service-center-system" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
             </div>
           </div>
         </div>
 
-        <div class="md:col-span-7 p-6 md:p-8 bg-[var(--bg)] hairline-grid flex items-center justify-center">
+        <div id="preview-service-center" class="md:col-span-7 p-6 md:p-8 bg-[var(--bg)] hairline-grid flex items-center justify-center">
           <div class="w-full border border-[var(--fg)] bg-[var(--card)]">
             <div class="flex items-center justify-between px-3 py-1.5 border-b border-[var(--border)] font-mono-tech text-[11px] text-[var(--muted)]">
               <span>mm-express-ui // /home</span>
@@ -172,9 +172,9 @@
               <span class="uppercase tracking-widest text-[var(--accent)]">02 / TOWER D&amp;D COMPANION</span>
               <span class="text-[var(--muted)]">NODE.JS · SSE</span>
             </div>
-            <div class="border border-[var(--border)] bg-[var(--bg)] p-3 font-mono-tech text-xs space-y-2">
+            <div id="preview-tower-vtt" class="border border-[var(--border)] bg-[var(--bg)] p-3 font-mono-tech text-xs space-y-2">
               <div class="flex justify-between text-[10px] text-[var(--muted)] border-b border-[var(--border)] pb-1">
-                <span>tower-system-vtt // FLOOR 3F</span>
+                <span>tower-dnd-companion-app // FLOOR 3F</span>
                 <span>● SSE LIVE</span>
               </div>
               <div class="p-2 border border-[var(--border)] bg-[var(--card)] space-y-1">
@@ -185,13 +185,13 @@
             <div class="space-y-2">
               <h3 class="font-editorial text-2xl font-bold">Tower System VTT (D&amp;D Companion)</h3>
               <p class="text-sm text-[var(--muted)] leading-relaxed">
-                Real-time D&amp;D &amp; Korean Manhwa Tower RPG companion app with DM &amp; Player portals, Server-Sent Events, custom formula evaluator, vertical Tower map canvas, and AI Character Art Studio.
+                Mobile-friendly, real-time D&amp;D &amp; Korean Manhwa Tower RPG companion web app with separate DM and Player portals, Server-Sent Events (SSE), custom formula evaluator, reactive counter-combat, vertical Tower map canvas, dice up to d100, and prompt-driven AI character art.
               </p>
             </div>
           </div>
           <div class="flex items-center justify-between pt-2 font-mono-tech text-xs">
-            <span class="text-[var(--muted)]">Node.js · SSE · Canvas</span>
-            <a href="https://github.com/jairusjimenez" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
+            <span class="text-[var(--muted)]">Node.js · SSE · Canvas · Gemini Imagen</span>
+            <a href="https://github.com/jairusjimenez/tower-dnd-companion-app" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
           </div>
         </article>
 
@@ -201,9 +201,9 @@
               <span class="uppercase tracking-widest text-[var(--accent)]">03 / CLINICAL GROWTH TOOL</span>
               <span class="text-[var(--muted)]">HTML5 · SVG</span>
             </div>
-            <div class="border border-[var(--border)] bg-[var(--bg)] p-3 font-mono-tech text-xs space-y-2">
+            <div id="preview-who-bmi" class="border border-[var(--border)] bg-[var(--bg)] p-3 font-mono-tech text-xs space-y-2">
               <div class="flex justify-between text-[10px] text-[var(--muted)] border-b border-[var(--border)] pb-1">
-                <span>who-cgs-bmi-app // LMS Z-SCORE</span>
+                <span>who-cgs-bmi-calculator // LMS Z-SCORE</span>
                 <span class="text-[var(--accent)]">0–60m · 5–19y · 19+y</span>
               </div>
               <svg viewBox="0 0 240 50" class="w-full h-12 bg-[var(--card)] border border-[var(--border)]">
@@ -214,13 +214,13 @@
             <div class="space-y-2">
               <h3 class="font-editorial text-2xl font-bold">WHO CGS BMI &amp; Growth Calculator</h3>
               <p class="text-sm text-[var(--muted)] leading-relaxed">
-                Zero-dependency clinical web app computing BMI, BMI-for-Age, and Height-for-Age Z-scores and percentiles across all ages using WHO LMS Box-Cox interpolation and interactive SVG growth curves.
+                Responsive, zero-dependency clinical web app computing BMI, BMI-for-Age, and Height-for-Age Z-scores and percentiles across all ages (WHO CGS 0–5y, WHO 2007 5–19y, Adult 19+y) with LMS Box-Cox interpolation and interactive SVG growth curves.
               </p>
             </div>
           </div>
           <div class="flex items-center justify-between pt-2 font-mono-tech text-xs">
             <span class="text-[var(--muted)]">JavaScript · SVG · WHO LMS</span>
-            <a href="https://github.com/jairusjimenez" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
+            <a href="https://github.com/jairusjimenez/who-cgs-bmi-calculator" target="_blank" rel="noopener noreferrer" class="underline">GitHub Repo ↗</a>
           </div>
         </article>
       </section>
@@ -330,6 +330,35 @@
       }
     }
     loadGitHubRepos();
+
+    // Auto-load README images if any are added to the GitHub READMEs later
+    async function syncReadmeImages() {
+      const targets = [
+        { repo: 'service-center-system', elId: 'preview-service-center' },
+        { repo: 'tower-dnd-companion-app', elId: 'preview-tower-vtt' },
+        { repo: 'who-cgs-bmi-calculator', elId: 'preview-who-bmi' }
+      ];
+      for (const t of targets) {
+        try {
+          const res = await fetch(`https://raw.githubusercontent.com/jairusjimenez/${t.repo}/main/README.md`);
+          if (!res.ok) continue;
+          const md = await res.text();
+          const match = md.match(/!\[([^\]]*)\]\(([^)\s]+)\)/);
+          if (!match) continue;
+          let src = match[2];
+          if (!/^https?:\/\//i.test(src)) {
+            src = `https://raw.githubusercontent.com/jairusjimenez/${t.repo}/main/${src.replace(/^\.?\//, '')}`;
+          }
+          const container = document.getElementById(t.elId);
+          if (container) {
+            container.innerHTML = `<img src="${src}" alt="${match[1] || t.repo}" class="w-full h-auto block border border-[var(--border)]" />`;
+          }
+        } catch {
+          // Keep built-in UI preview fallback
+        }
+      }
+    }
+    syncReadmeImages();
 
     // Resume request handler (uses optional Formspree/Web3Forms endpoint, or opens pre-filled email)
     const RESUME_OWNER_EMAIL = 'jairusjimenez@live.com';
